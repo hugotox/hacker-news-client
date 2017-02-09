@@ -47,7 +47,7 @@ class Main extends React.Component {
 	}
 
 	render() {
-		if(this.props.fetchingStory) {
+		if (this.props.fetchingStory) {
 			return (
 				<div>Loading...</div>
 			);

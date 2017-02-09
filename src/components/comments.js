@@ -1,15 +1,27 @@
 import React from 'react';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import Utils from '../utils';
 
 export default class Comments extends React.Component {
 
+	// Uncomment this componentDidMount to load ALL subcomments at first load:
+	// componentDidMount() {
+	// 	this.props.comments.map((comment) => {
+	// 		if (comment.parent === this.props.parentId) {
+	// 			this.expandCommentsClickHandler(comment)();
+	// 		}
+	// 	});
+	// }
+
 	expandCommentsClickHandler(comment) {
 		return (e) => {
-			e.preventDefault();
+			if (e) {
+				e.preventDefault();
+			}
 			const {fetchedCommentsIds} = this.props;
 			if (comment.kids && comment.kids.length) {
 				// fetch kids comments only if not already fetched
-				if(fetchedCommentsIds.indexOf(comment.id) === -1) {
+				if (fetchedCommentsIds.indexOf(comment.id) === -1) {
 					this.props.triggerFetchKidComments(comment.id, comment.kids);
 				} else {
 					// just add the comment id to the expanded comments ids
@@ -27,33 +39,43 @@ export default class Comments extends React.Component {
 	}
 
 	renderKidComments(comment) {
-		const {comments, triggerFetchKidComments, expandedCommentsIds, fetchedCommentsIds, expandCommentId} = this.props;
-		if(expandedCommentsIds.indexOf(comment.id) === -1) {
-			if(comment.kids && comment.kids.length) {
-				return (
-					<div>
-						<a href="#" onClick={this.expandCommentsClickHandler(comment)} className="caret-link">
-							<i className="fa fa-caret-down"/> See replies
-						</a>
-					</div>
-				);
-			} else {
-				return null;
-			}
+		if (!comment.kids || comment.kids.length === 0) {
+			return null;
+		}
+
+		const {comments, triggerFetchKidComments, expandedCommentsIds, fetchedCommentsIds, expandCommentId, hideComments} = this.props;
+
+		if (expandedCommentsIds.indexOf(comment.id) === -1) {
+			return (
+				<div>
+					<a href="#" onClick={this.expandCommentsClickHandler(comment)} className="caret-link">
+						<i className="fa fa-caret-down"/> See replies
+					</a>
+				</div>
+			);
 		} else {
 			return (
 				<div>
 					<a href="#" onClick={this.hideCommentsClickHandler(comment)} className="caret-link">
 						<i className="fa fa-caret-up"/> Hide replies
 					</a>
-					<Comments
-						parentId={comment.id}
-						comments={comments}
-						expandedCommentsIds={expandedCommentsIds}
-						fetchedCommentsIds={fetchedCommentsIds}
-						expandCommentId={expandCommentId}
-						triggerFetchKidComments={triggerFetchKidComments}
-					/>
+					<ReactCSSTransitionGroup
+						transitionName="commentShowUp"
+						transitionEnterTimeout={500}
+						transitionLeaveTimeout={300}
+						transitionAppear={true}
+						transitionAppearTimeout={500}
+					>
+						<Comments
+							parentId={comment.id}
+							comments={comments}
+							expandedCommentsIds={expandedCommentsIds}
+							fetchedCommentsIds={fetchedCommentsIds}
+							expandCommentId={expandCommentId}
+							triggerFetchKidComments={triggerFetchKidComments}
+							hideComments={hideComments}
+						/>
+					</ReactCSSTransitionGroup>
 				</div>
 			);
 		}
@@ -64,7 +86,7 @@ export default class Comments extends React.Component {
 		return (
 			<ul>
 				{comments.map((comment, i) => {
-					if(comment.parent === parentId) {
+					if (comment.parent === parentId) {
 						return (
 							<li key={i} className="comment">
 								<div className="author">

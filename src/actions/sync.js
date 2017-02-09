@@ -37,14 +37,14 @@ export const fetchKidCommentsDone = (parentId, data) => {
 };
 
 const fetchCommentHelper = (dispatch, id, comments, i, l) => {
-	if(i === 0) {
+	if (i === 0) {
 		dispatch(fetchCommentsStarted());
 	}
 	return async.fetchHNData(id)
 		.then(response => {
-			if(response.status === 200) {
+			if (response.status === 200) {
 				comments.push(response.data);
-				if(i === l-1) {
+				if (i === l - 1) {
 					dispatch(fetchCommentsDone(comments));
 				}
 			}
@@ -55,7 +55,7 @@ export const triggerFetchKidComments = (parentId, kids) => {
 	return (dispatch) => {
 		const comments = [];  // temp variable to hold all comments and prevent reducer to run on every comment response
 		const promises = [];
-		for(let i=0, l=kids.length; i<l; i++) {
+		for (let i = 0, l = kids.length; i < l; i++) {
 			promises.push(
 				async.fetchHNData(kids[i])
 					.then(response => {
@@ -77,12 +77,12 @@ export const triggerFetchStory = (id) => {
 		dispatch(fetchStoryStarted());
 		return async.fetchHNData(id)
 			.then(response => {
-				if(response.status === 200) {
+				if (response.status === 200) {
 
 					// fetch comments
 					const comments = [];  // temp variable to hold all comments and prevent reducer to run on every comment response
 					let kids = response.data.kids;
-					for(let i=0, l=kids.length; i<l; i++) {
+					for (let i = 0, l = kids.length; i < l; i++) {
 						fetchCommentHelper(dispatch, kids[i], comments, i, l);
 					}
 

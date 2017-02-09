@@ -1,0 +1,18 @@
+
+.commentShowUp-leave {
+  opacity: 1;
+}
+
+.commentShowUp-leave.commentShowUp-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+}
+
+.commentShowUp-appear {
+  opacity: 0.01;
+}
+
+.commentShowUp-appear.commentShowUp-appear-active {
+  opacity: 1;
+  transition: opacity .5s ease-in;
+}

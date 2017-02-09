@@ -5,7 +5,7 @@ import TopLinks from './top-links';
 
 export default class Header extends React.Component {
 	render() {
-		const { data } = this.props;
+		const {data} = this.props;
 		return (
 			<div>
 				<TopLinks/>
