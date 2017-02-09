@@ -92,4 +92,18 @@ export const triggerFetchStory = (id) => {
 	};
 };
 
+export const hideComments = (parentId) => {
+	return {
+		type: ActionTypes.HIDE_COMMENTS,
+		parentId
+	};
+};
+
+export const expandCommentId = (id) => {
+	return {
+		type: ActionTypes.EXPAND_COMMENT_ID,
+		id
+	};
+};
+
 

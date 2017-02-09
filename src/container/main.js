@@ -4,7 +4,12 @@ import { bindActionCreators } from 'redux';
 
 import Header from '../components/header';
 import Comments from '../components/comments';
-import { triggerFetchStory, triggerFetchKidComments } from '../actions/sync';
+import {
+	triggerFetchStory,
+	triggerFetchKidComments,
+	hideComments,
+	expandCommentId
+} from '../actions/sync';
 
 
 function mapStateToProps(state) {
@@ -13,6 +18,8 @@ function mapStateToProps(state) {
 		storyData: state.storyData,
 		comments: state.comments,
 		fetchingComments: state.fetchingComments,
+		expandedCommentsIds: state.expandedCommentsIds,
+		fetchedCommentsIds: state.fetchedCommentsIds,
 	};
 }
 
@@ -20,14 +27,23 @@ function mapActionsToProps(dispatch) {
 	return {
 		triggerFetchStory: bindActionCreators(triggerFetchStory, dispatch),
 		triggerFetchKidComments: bindActionCreators(triggerFetchKidComments, dispatch),
+		hideComments: bindActionCreators(hideComments, dispatch),
+		expandCommentId: bindActionCreators(expandCommentId, dispatch),
 	}
 }
 
 
 class Main extends React.Component {
 
+	constructor(props) {
+		super(props);
+
+		// hardcoded story Id for this demo
+		this.storyId = 3410773;
+	}
+
 	componentWillMount() {
-		this.props.triggerFetchStory(3410773);  // hardcoded story Id for this demo
+		this.props.triggerFetchStory(this.storyId);
 	}
 
 	render() {
@@ -43,8 +59,13 @@ class Main extends React.Component {
 					<div>Fetching comments...</div>
 					:
 					<Comments
+						parentId={this.storyId}
 						comments={this.props.comments}
+						expandedCommentsIds={this.props.expandedCommentsIds}
+						fetchedCommentsIds={this.props.fetchedCommentsIds}
+						expandCommentId={this.props.expandCommentId}
 						triggerFetchKidComments={this.props.triggerFetchKidComments}
+						hideComments={this.props.hideComments}
 					/>
 				}
 			</div>

@@ -4,7 +4,9 @@ const initialState = {
 	fetchingStory: false,
 	fetchingComments: false,
 	storyData: null,
-	comments: [],  // array of comment objects, each comment can have `comments` for his own
+	comments: [],  // array of comment objects from all levels
+	expandedCommentsIds: [],  // id of all parent objects with comments expanded
+	fetchedCommentsIds: [],  // id of all parent objects who already fetched kids
 };
 
 const findKidNode = (id, node) => {
@@ -50,19 +52,56 @@ export default function reducer (state = initialState, action) {
 		case (ActionTypes.ADD_COMMENTS): {
 			return Object.assign({}, state, {
 				comments: action.data,
-				fetchingComments: false
+				fetchingComments: false,
+				expandedCommentsIds: [action.data[0].parent],
+				fetchedCommentsIds: [action.data[0].parent],
 			});
 		}
 
 		case (ActionTypes.FETCH_KID_COMMENTS_DONE): {
-			const stateUpdated = JSON.parse(JSON.stringify(state));
+			const allIds = state.comments.map(comment => comment.id);
+			const commentsToAdd = action.data.filter(comment => allIds.indexOf(comment.id) === -1);
+			let updatedExpandedIds, updatedFetchedIds;
 
-			// action.parentId
-			// action.data
-			let currentNode = findKidNode(action.parentId, stateUpdated);
-			currentNode.comments = action.data;
+			if(state.expandedCommentsIds.indexOf(action.parentId) === -1) {
+				updatedExpandedIds = state.expandedCommentsIds.concat([action.parentId]);
+			} else {
+				updatedExpandedIds = state.expandedCommentsIds;
+			}
 
-			return stateUpdated;
+			if(state.fetchedCommentsIds.indexOf(action.parentId) === -1) {
+				updatedFetchedIds = state.fetchedCommentsIds.concat([action.parentId]);
+			} else {
+				updatedFetchedIds = state.fetchedCommentsIds;
+			}
+
+			return Object.assign({}, state, {
+				comments: state.comments.concat(commentsToAdd),
+				expandedCommentsIds: updatedExpandedIds,
+				fetchedCommentsIds: updatedFetchedIds,
+			});
+		}
+
+		case (ActionTypes.HIDE_COMMENTS): {
+			let updatedExpandedIds = state.expandedCommentsIds.concat([]);
+			const idx = state.expandedCommentsIds.indexOf(action.parentId);
+			if(idx !== -1) {
+				updatedExpandedIds.splice(idx, 1);
+			}
+			return Object.assign({}, state, {
+				expandedCommentsIds: updatedExpandedIds
+			});
+		}
+
+		case (ActionTypes.EXPAND_COMMENT_ID): {
+			let updatedExpandedIds = state.expandedCommentsIds.concat([]);
+			const idx = state.expandedCommentsIds.indexOf(action.id);
+			if(idx === -1) {
+				updatedExpandedIds.push(action.id);
+			}
+			return Object.assign({}, state, {
+				expandedCommentsIds: updatedExpandedIds
+			});
 		}
 
 		default:
