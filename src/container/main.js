@@ -54,20 +54,28 @@ class Main extends React.Component {
 		}
 		return (
 			<div className="container">
-				<Header/>
-				{this.props.fetchingComments ?
-					<div>Fetching comments...</div>
-					:
-					<Comments
-						parentId={this.storyId}
-						comments={this.props.comments}
-						expandedCommentsIds={this.props.expandedCommentsIds}
-						fetchedCommentsIds={this.props.fetchedCommentsIds}
-						expandCommentId={this.props.expandCommentId}
-						triggerFetchKidComments={this.props.triggerFetchKidComments}
-						hideComments={this.props.hideComments}
-					/>
-				}
+				<div className="row">
+					<div className="col-xs-12">
+						<Header
+							data={this.props.storyData}
+						/>
+						{this.props.fetchingComments ?
+							<div>Fetching comments...</div>
+							:
+							<div className="comments">
+								<Comments
+									parentId={this.storyId}
+									comments={this.props.comments}
+									expandedCommentsIds={this.props.expandedCommentsIds}
+									fetchedCommentsIds={this.props.fetchedCommentsIds}
+									expandCommentId={this.props.expandCommentId}
+									triggerFetchKidComments={this.props.triggerFetchKidComments}
+									hideComments={this.props.hideComments}
+								/>
+							</div>
+						}
+					</div>
+				</div>
 			</div>
 		)
 	}

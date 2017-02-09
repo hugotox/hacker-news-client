@@ -1,0 +1,23 @@
+.top-links {
+  background-color: #ff6600;
+  padding: 10px 20px;
+  color: #ffe0c8;
+
+  .fa {
+    font-size: 24px;
+  }
+
+  .right-icons {
+    .fa {
+      margin-left: 20px;
+    }
+  }
+
+}
+
+@media (max-width: 767px){
+  .top-links {
+    margin-left: -20px;
+    margin-right: -20px;
+  }
+}

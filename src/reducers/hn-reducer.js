@@ -1,7 +1,7 @@
 import ActionTypes from '../actions/action-types';
 
 const initialState = {
-	fetchingStory: false,
+	fetchingStory: true,
 	fetchingComments: false,
 	storyData: null,
 	comments: [],  // array of comment objects from all levels
